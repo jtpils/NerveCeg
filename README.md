@@ -6,15 +6,15 @@ In nerve segmentation task, there was a critical shortcoming which affects very 
 
 ## LICENSE
 
-Check [LICENSE]('./LICENSE').
+Check [LICENSE](https://github.com/kim-younghan/NerveCeg/blob/master/LICENSE).
 
 ## Installation
 
-Please check Installation procedure in [INSTALL.md]('./INSTALL.md).
+Please check Installation procedure in [INSTALL.md](https://github.com/kim-younghan/NerveCeg/blob/master/INSTALL.md).
 
 ## Quick Start
 
-Follow the instructions in [QUICK_START.md]('./QUICK_START.md).
+Follow the instructions in [QUICK_START.md](https://github.com/kim-younghan/NerveCeg/blob/master/QUICK_START.md).
 
 ## Acknowledgments
 
