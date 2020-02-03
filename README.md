@@ -37,6 +37,64 @@ EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks by Ming
 }
 ```
 
+U-Net: Convolutional Networks for Biomedical Image Segmentation by Olaf Ronneberger, Philipp Fischer, Thomas Brox
+
+```plain
+@misc{ronneberger2015unet,
+    title={U-Net: Convolutional Networks for Biomedical Image Segmentation},
+    author={Olaf Ronneberger and Philipp Fischer and Thomas Brox},
+    year={2015},
+    eprint={1505.04597},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV}
+}
+```
+
+Road Extraction by Deep Residual U-Net by Zhengxin Zhang, Qingjie Liu, Yunhong Wang
+
+```plain
+@article{Zhang_2018,
+   title={Road Extraction by Deep Residual U-Net},
+   volume={15},
+   ISSN={1558-0571},
+   url={http://dx.doi.org/10.1109/LGRS.2018.2802944},
+   DOI={10.1109/lgrs.2018.2802944},
+   number={5},
+   journal={IEEE Geoscience and Remote Sensing Letters},
+   publisher={Institute of Electrical and Electronics Engineers (IEEE)},
+   author={Zhang, Zhengxin and Liu, Qingjie and Wang, Yunhong},
+   year={2018},
+   month={May},
+   pages={749–753}
+}
+```
+
+Recurrent Residual Convolutional Neural Network based on U-Net (R2U-Net) for Medical Image Segmentation by Md Zahangir Alom, Mahmudul Hasan, Chris Yakopcic, Tarek M. Taha, Vijayan K. Asari
+
+```plain
+@misc{alom2018recurrent,
+    title={Recurrent Residual Convolutional Neural Network based on U-Net (R2U-Net) for Medical Image Segmentation},
+    author={Md Zahangir Alom and Mahmudul Hasan and Chris Yakopcic and Tarek M. Taha and Vijayan K. Asari},
+    year={2018},
+    eprint={1802.06955},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV}
+}
+```
+
+Attention U-Net: Learning Where to Look for the Pancreas by Ozan Oktay, Jo Schlemper, Loic Le Folgoc, Matthew Lee, Mattias Heinrich, Kazunari Misawa, Kensaku Mori, Steven McDonagh, Nils Y Hammerla, Bernhard Kainz, Ben Glocker, Daniel Rueckert
+
+```plain
+@misc{oktay2018attention,
+    title={Attention U-Net: Learning Where to Look for the Pancreas},
+    author={Ozan Oktay and Jo Schlemper and Loic Le Folgoc and Matthew Lee and Mattias Heinrich and Kazunari Misawa and Kensaku Mori and Steven McDonagh and Nils Y Hammerla and Bernhard Kainz and Ben Glocker and Daniel Rueckert},
+    year={2018},
+    eprint={1804.03999},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV}
+}
+```
+
 PyTorch CNN Visualizations by Utku Ozbulak
 
 ```plain
