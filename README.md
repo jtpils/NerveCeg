@@ -4,7 +4,7 @@ Effective nerve segmentation with task fusion
 
 ## LICENSE
 
-Check [LICENSE](https://github.com/kim-younghan/NerveCeg/blob/master/LICENSE.md).
+Check [LICENSE](https://github.com/kim-younghan/NerveCeg/blob/master/LICENSE).
 
 ## Installation
 
