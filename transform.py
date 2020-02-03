@@ -15,9 +15,6 @@ def crop_square(im):
     print(left, top, right, bottom)
     im = im[int(left):int(right), int(top):int(bottom)]
 
-    cv2.imshow('123', im)
-    cv2.waitKey()
-
     return im
 
 def preprocessing(image, label):
