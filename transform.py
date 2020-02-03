@@ -12,7 +12,7 @@ def crop_square(im):
     top = (size[1] - new_height)/2
     right = (size[0] + new_width)/2
     bottom = (size[1] + new_height)/2
-    print(left, top, right, bottom)
+    
     im = im[int(left):int(right), int(top):int(bottom)]
 
     return im

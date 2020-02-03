@@ -9,47 +9,29 @@ from torch.utils.data import DataLoader
 from typing import Callable, Any
 from typing import NamedTuple, List
 from torchvision.utils import make_grid
-from torchvision.transforms import ToTensor
 
 
 def to_np(x):
     return x.data.cpu().numpy()
 
 class BatchResult(NamedTuple):
-    """
-    Represents the result of training for a single batch: the loss
-    and score of the batch.
-    """
     loss: float
-    score: float
 
 
 class EpochResult(NamedTuple):
-    """
-    Represents the result of training for a single epoch: the loss per batch
-    and accuracy on the dataset (train or test).
-    """
     losses: List[float]
-    score: float
 
 
 class FitResult(NamedTuple):
-    """
-    Represents the result of fitting a model for multiple epochs given a
-    training and test (or validation) set.
-    The losses are for each batch and the accuracies are per epoch.
-    """
     num_epochs: int
     train_loss: List[float]
-    train_acc: List[float]
     test_loss: List[float]
-    test_acc: List[float]
-    best_score: float
 
 
 class Trainer:
-    def __init__(self, model, loss_fn, optimizer, objective_metric, device="cuda", tensorboard_logger=None, tensorboard_log_images=True, experiment_prefix=None):
+    def __init__(self, model, loss_fn, optimizer, device='cuda', tensorboard_logger=None, tensorboard_log_images=True, experiment_prefix=None):
         self.tensorboard_logger = tensorboard_logger
+
         if experiment_prefix is None:
             now = datetime.datetime.now()
             self.experiment_prefix = now.strftime(r"%Y-%m-%d\%H:%M:%S")
@@ -59,7 +41,6 @@ class Trainer:
         self.model = model
         self.loss_fn = loss_fn
         self.optimizer = optimizer
-        self.objective_metric = objective_metric
         self.device = device
 
         if self.device:
@@ -69,42 +50,24 @@ class Trainer:
             num_epochs, checkpoints: str = None,
             early_stopping: int = None,
             print_every=1, **kw) -> FitResult:
-
         actual_num_epochs = 0
-        train_loss, train_acc, test_loss, test_acc = [], [], [], []
-
-        best_score = None
-        epochs_without_improvement = 0
-
+        train_loss, test_loss = [], []
+        
         for epoch in range(num_epochs):
-            verbose = False  # pass this to train/test_epoch.
+            verbose = None
             if epoch % print_every == 0 or epoch == num_epochs-1:
                 verbose = True
             self._print(f'--- EPOCH {epoch+1}/{num_epochs} ---', verbose)
-
             epoch_train_res = self.train_epoch(dl_train, verbose=verbose, **kw)
             train_loss.extend([float(x.item()) for x in epoch_train_res.losses])
-            train_acc.append(float(epoch_train_res.score))
 
             epoch_test_res = self.test_epoch(dl_test, verbose=verbose, **kw)
             test_loss.extend([float(x.item()) for x in epoch_test_res.losses])
-            test_acc.append(float(epoch_test_res.score))
 
-            if best_score is None:
-                best_score = epoch_test_res.score
-            elif epoch_test_res.score > best_score:
-                best_score = epoch_test_res.score
-                if checkpoints is not None:
-                    torch.save(self.model, checkpoints)
-                    print("**** Checkpoint saved ****")
-                epochs_without_improvement = 0
-            else:
-                if early_stopping is not None and epochs_without_improvement >= early_stopping:
-                    print("Early stopping after %s with out improvement" % epochs_without_improvement)
-                    break
-                epochs_without_improvement += 1
+        torch.save(self.model.state_dict(), './cls/'+'ckpt_'+str(epoch)+'.pt')
 
-        return FitResult(actual_num_epochs, train_loss, train_acc, test_loss, test_acc, best_score)
+        return FitResult(actual_num_epochs,
+                         train_loss, train_acc, test_loss, test_acc, best_score)
 
     def train_epoch(self, dl_train: DataLoader, **kw) -> EpochResult:
         """
@@ -151,21 +114,19 @@ class Trainer:
             X = X.to(self.device)
         y = y.to(self.device)
         pred = self.model(X)
-        loss = self.loss_fn(pred.double(), y.double())
+        loss = self.loss_fn(pred, y)
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
-        score = self.objective_metric(pred, y)
         if self.tensorboard_logger:
             self.tensorboard_logger.add_scalar('exp-%s/batch/train/loss' % self.experiment_prefix, loss, index)
-            self.tensorboard_logger.add_scalar('exp-%s/batch/train/score' % self.experiment_prefix, score, index)
             if index % 300 == 0:
                 for tag, value in self.model.named_parameters():
                     tag = tag.replace('.', '/')
                     self.tensorboard_logger.add_histogram('exp-%s/batch/train/param/%s' % (self.experiment_prefix, tag), to_np(value), index)
                     self.tensorboard_logger.add_histogram('exp-%s/batch/train/param/%s/grad' % (self.experiment_prefix, tag), to_np(value.grad), index)
 
-        return BatchResult(loss, score)
+        return BatchResult(loss)
 
     def test_batch(self, index, batch_data) -> BatchResult:
         """
@@ -184,12 +145,10 @@ class Trainer:
                 X = X.to(self.device)
             y = y.to(self.device)
             pred = self.model(X)
-            loss = self.loss_fn(pred[0], y[0])
-            score = self.objective_metric(pred, y)
+            loss = self.loss_fn(pred, y)
             if self.tensorboard_logger:
                 self.tensorboard_logger.add_scalar('exp-%s/batch/test/loss' % self.experiment_prefix, loss, index)
-                self.tensorboard_logger.add_scalar('exp-%s/batch/test/score' % self.experiment_prefix, score, index)
-            return BatchResult(loss, score)
+            return BatchResult(loss)
 
     @staticmethod
     def _print(message, verbose=True):
@@ -223,33 +182,25 @@ class Trainer:
         with tqdm.tqdm(desc=pbar_name, total=num_batches,
                        file=pbar_file) as pbar:
             dl_iter = iter(dl)
-            overall_score = overall_loss = avg_score = avg_loss = counter = 0
-            min_loss = min_score = 1
-            max_loss = max_score = 0
+            overall_loss = avg_loss = counter = 0
+            min_loss = 1
+            max_loss = 0
             for batch_idx in range(num_batches):
                 counter += 1
                 data = next(dl_iter)
                 batch_res = forward_fn(batch_idx, data)
                 if batch_res.loss > max_loss:
                     max_loss = batch_res.loss
-                if batch_res.score > max_score:
-                    max_score = batch_res.score
-
                 if batch_res.loss < min_loss:
                     min_loss = batch_res.loss
-                if batch_res.score < min_score:
-                    min_score = batch_res.score
                 overall_loss += batch_res.loss
-                overall_score += batch_res.score
                 losses.append(batch_res.loss)
 
                 avg_loss = overall_loss / counter
-                avg_score = overall_score / counter
-                pbar.set_description(f'{pbar_name} (Avg. loss:{avg_loss:.3f}, Avg. score:{avg_score:.3f})')
+                pbar.set_description(f'{pbar_name} (Avg. loss:{avg_loss:.3f})')
                 pbar.update()
-
+            
             pbar.set_description(f'{pbar_name} '
-                                 f'(Avg. Loss {avg_loss:.3f}, Min {min_loss:.3f}, Max {max_loss:.3f}), '
-                                 f'(Avg. Score {avg_score:.4f}, Min {min_score:.4f}, Max {max_score:.4f})')
-
-        return EpochResult(losses=losses, score=avg_score)
+                                 f'(Avg. Loss {avg_loss:.3f}, Min {min_loss:.3f}, Max {max_loss:.3f})')
+                    
+        return EpochResult(losses=losses)
