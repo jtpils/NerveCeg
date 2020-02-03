@@ -1,6 +1,4 @@
-# NerveCeg
-
-Effective nerve segmentation with two-stage neural network
+# NerveCeg: Effective nerve segmentation with two-stage neural network
 
 In nerve segmentation task, there was a critical shortcoming which affects very bad in the result — the problem nerve mask with no annotated mask made neural network biased. As the unannotated mask is more than 50% of the dataset, the trained neural network tended to draw blank masks on any nerve image. To solve this problem, we suggest a two-stage neural network which classifies and do segmentation task.
 
