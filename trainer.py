@@ -67,7 +67,7 @@ class Trainer:
         torch.save(self.model.state_dict(), './cls/'+'ckpt_'+str(epoch)+'.pt')
 
         return FitResult(actual_num_epochs,
-                         train_loss, train_acc, test_loss, test_acc, best_score)
+                         train_loss, test_loss)
 
     def train_epoch(self, dl_train: DataLoader, **kw) -> EpochResult:
         """

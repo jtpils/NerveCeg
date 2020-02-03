@@ -4,6 +4,12 @@ Effective nerve segmentation with two-stage neural network
 
 In nerve segmentation task, there was a critical shortcoming which affects very bad in the result — the problem nerve mask with no annotated mask made neural network biased. As the unannotated mask is more than 50% of the dataset, the trained neural network tended to draw blank masks on any nerve image. To solve this problem, we suggest a two-stage neural network which classifies and do segmentation task.
 
+The first part is a binary classification task. The existence of a nerve mask is labeling criteria. By adding all values in a nerve mask, we can find out whether the mask is empty or not. In this code, we used EfficientNet-B4 for classifying nerve existence.
+
+The second part is the nerve segmentation task. After confirming nerve presence, we segment nerve by U-Net, and others derived from U-Net. The reason for selecting U-Net and it's affiliated models is that the feature accumulation component gives a massive advantage in medical imagery segmentation.
+
+![Architechture of NerveCeg](https://user-images.githubusercontent.com/40779417/73637539-e85d4500-46ab-11ea-9f6d-d7d16400c76d.png)
+
 ## LICENSE
 
 Check [LICENSE](https://github.com/kim-younghan/NerveCeg/blob/master/LICENSE).
