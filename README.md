@@ -4,15 +4,15 @@ Effective nerve segmentation with task fusion
 
 ## LICENSE
 
-Check [LICENSE]('./LICENSE').
+Check [LICENSE](https://github.com/kim-younghan/NerveCeg/blob/master/LICENSE.md).
 
 ## Installation
 
-Please check Installation procedure in [INSTALL.md]('./INSTALL.md).
+Please check Installation procedure in [INSTALL.md](https://github.com/kim-younghan/NerveCeg/blob/master/INSTALL.md).
 
 ## Quick Start
 
-Follow the instructions in [QUICK_START.md]('./QUICK_START.md).
+Follow the instructions in [QUICK_START.md](https://github.com/kim-younghan/NerveCeg/blob/master/QUICK_START.md).
 
 ## Acknowledgments
 
