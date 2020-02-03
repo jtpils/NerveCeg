@@ -6,7 +6,7 @@ The first part is a binary classification task. The existence of a nerve mask is
 
 The second part is the nerve segmentation task. After confirming nerve presence, we segment nerve by U-Net, and others derived from U-Net. The reason for selecting U-Net and it's affiliated models is that the feature accumulation component gives a massive advantage in medical imagery segmentation.
 
-![Architechture of NerveCeg](https://user-images.githubusercontent.com/40779417/73637539-e85d4500-46ab-11ea-9f6d-d7d16400c76d.png)
+![Architechture of NerveCeg](https://user-images.githubusercontent.com/40779417/73638667-3410ee00-46ae-11ea-9644-cc62242d5651.png)
 
 ## LICENSE
 
