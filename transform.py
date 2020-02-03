@@ -1,5 +1,6 @@
 import torchvision.transforms as transforms
 from cv2 import cv2
+from dataset import NerveClassificationDataset
 
 
 def crop_square(im):
@@ -29,3 +30,12 @@ def preprocessing(image, label):
     )
     
     return image_transform(image).float(), label
+
+
+if __name__ == '__main__':
+    ds_train = NerveClassificationDataset(root='./data/', train=True, transform=preprocessing)
+
+    print(ds_train.__getitem__(10))
+    print(ds_train.__getitem__(10)[0].shape)
+    print(ds_train.__getitem__(10)[1])
+    print("DATA LOADED")

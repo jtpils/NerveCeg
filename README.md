@@ -1,6 +1,6 @@
 # NerveCeg
 
-Effective nerve segmentation with
+Effective nerve segmentation with task fusion
 
 ## LICENSE
 
