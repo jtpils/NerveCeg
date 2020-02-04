@@ -4,11 +4,14 @@ import sys
 import tqdm
 import torch
 import datetime
+import time
 
 from torch.utils.data import DataLoader
 from typing import Callable, Any
 from typing import NamedTuple, List
 from torchvision.utils import make_grid
+
+from segmentation.util.transform import pred_proc
 
 def to_np(x):
     return x.data.cpu().numpy()
@@ -58,6 +61,7 @@ class Trainer:
                  loss_fn,
                  optimizer,
                  objective_metric,
+                 cls_model,
                  device="cuda",
                  tensorboard_logger=None,
                  tensorboard_log_images=True,
@@ -71,6 +75,7 @@ class Trainer:
         :param tensorboard_logger: tensordboard logger.
         """
         self.tensorboard_logger = tensorboard_logger
+        self.cls_model = cls_model
 
         if experiment_prefix is None:
             now = datetime.datetime.now()
@@ -190,20 +195,29 @@ class Trainer:
         else:
             X = X.to(self.device)
         y = y.to(self.device)
-        pred = self.model(X)
-        loss = self.loss_fn(pred, y)
-        self.optimizer.zero_grad()
-        loss.backward()
-        self.optimizer.step()
-        score = self.objective_metric(pred, y)
-        if self.tensorboard_logger:
-            self.tensorboard_logger.add_scalar('exp-%s/batch/train/loss' % self.experiment_prefix, loss, index)
-            self.tensorboard_logger.add_scalar('exp-%s/batch/train/score' % self.experiment_prefix, score, index)
-            if index % 300 == 0:
-                for tag, value in self.model.named_parameters():
-                    tag = tag.replace('.', '/')
-                    self.tensorboard_logger.add_histogram('exp-%s/batch/train/param/%s' % (self.experiment_prefix, tag), to_np(value), index)
-                    self.tensorboard_logger.add_histogram('exp-%s/batch/train/param/%s/grad' % (self.experiment_prefix, tag), to_np(value.grad), index)
+        cls_ = self.cls_model
+        _, indices = pred_proc(cls_(X))
+        loss = 0
+        score = 0
+        if to_np(indices)[0] == 1:
+            # print("YES MASK")
+            pred = self.model(X)
+            loss = self.loss_fn(pred, y)
+            self.optimizer.zero_grad()
+            loss.backward()
+            self.optimizer.step()
+            score = self.objective_metric(pred, y)
+            if self.tensorboard_logger:
+                self.tensorboard_logger.add_scalar('exp-%s/batch/train/loss' % self.experiment_prefix, loss, index)
+                self.tensorboard_logger.add_scalar('exp-%s/batch/train/score' % self.experiment_prefix, score, index)
+                if index % 300 == 0:
+                    for tag, value in self.model.named_parameters():
+                        tag = tag.replace('.', '/')
+                        self.tensorboard_logger.add_histogram('exp-%s/batch/train/param/%s' % (self.experiment_prefix, tag), to_np(value), index)
+                        self.tensorboard_logger.add_histogram('exp-%s/batch/train/param/%s/grad' % (self.experiment_prefix, tag), to_np(value.grad), index)
+        elif to_np(indices)[0] == 0:
+            # print("NO MASK")
+            pass
 
         return BatchResult(loss, score)
 

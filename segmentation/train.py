@@ -27,7 +27,7 @@ from segmentation.vis.vis import plot_fit, dataset_first_n
 
 torch.manual_seed(0)
 num_epochs = 35
-batch_size = 5
+batch_size = 4
 learning_rate = 0.001
 device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 print(device)
@@ -48,12 +48,13 @@ if __name__ == '__main__':
     dl_test = DataLoader(ds_test, batch_size=batch_size, shuffle=True)
 
     model = U_Net()
+    cls_model = torch.load('./cls/final.pt')
     # model = torch.nn.DataParallel(model)
-    model = model.cuda()
+    # model = model.cuda()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     criterion = dice_loss
     success_metric = dice_coeff
-    trainer = Trainer(model, criterion, optimizer, dice_coeff, device, None)
+    trainer = Trainer(model, criterion, optimizer, dice_coeff, cls_model, device, None)
     fit = trainer.fit(dl_train, dl_test, num_epochs=num_epochs, checkpoints='save_models/' + model.__class__.__name__)
     torch.save('final.pt')
 

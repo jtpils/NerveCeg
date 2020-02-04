@@ -25,6 +25,11 @@ def normalize(x,  mean=500, std=None):
         x /= std
     return x
 
+def pred_proc(pred):
+    values, indices = pred.max(1)
+
+    return values, indices
+
 def preprocessing(image, mask):
     image, mask = crop_square(image), crop_square(mask)
     mask_transformer = transforms.Compose([
