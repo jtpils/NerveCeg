@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--batch_size', type=int, default=15
+    '--batch_size', type=int, default=10
 )
 parser.add_argument(
     '--epoch', type=int, default=25
@@ -32,7 +32,7 @@ parser.add_argument(
 cfg = parser.parse_args()
 print(cfg)
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 print(device)
 
 if __name__ == '__main__':

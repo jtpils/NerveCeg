@@ -4,10 +4,10 @@ import torch
 from torchvision.transforms import transforms
 
 
-def crop_square(im):
+def crop_square(im, size):
     width, height = im.size
 
-    new_width, new_height = 400, 400
+    new_width, new_height = size, size
 
     left = (width - new_width)/2
     top = (height - new_height)/2
@@ -31,7 +31,7 @@ def pred_proc(pred):
     return values, indices
 
 def preprocessing(image, mask):
-    image, mask = crop_square(image), crop_square(mask)
+    image, mask = crop_square(image, 400), crop_square(mask, 400)
     mask_transformer = transforms.Compose([
         transforms.ToTensor()
         

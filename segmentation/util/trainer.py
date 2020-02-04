@@ -10,8 +10,9 @@ from torch.utils.data import DataLoader
 from typing import Callable, Any
 from typing import NamedTuple, List
 from torchvision.utils import make_grid
+from torchvision.transforms import ToPILImage, ToTensor
 
-from segmentation.util.transform import pred_proc
+from segmentation.util.transform import pred_proc, crop_square
 
 def to_np(x):
     return x.data.cpu().numpy()
@@ -241,11 +242,12 @@ class Trainer:
             else:
                 X = X.to(self.device)
             y = y.to(self.device)
+            X_t = ToTensor()(crop_square(ToPILImage()(X), 380))
             cls_ = self.cls_model
-            _, indices = pred_proc(cls_(X))
+            _, indices = pred_proc(cls_(X_t))
             loss_out = self.loss_fn(X, y)
             score_out = self.objective_metric(X, y)
-
+            
             if to_np(indices)[0] == 1:
                 pred = self.model(X)
                 loss = self.loss_fn(pred, y)

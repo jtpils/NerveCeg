@@ -43,7 +43,7 @@ if __name__ == '__main__':
     for i in pick:
         X, y = ds_test.__getitem__(i)
         print()
-        X = X.view(1, 3, 380, 380).cuda('cuda')
+        X = X.view(1, 3, 400, 400).cuda('cuda:1')
         values, indices = pred(model(X))
         
         ''' for models with features

@@ -6,7 +6,7 @@ from dataset import NerveClassificationDataset
 def crop_square(im):
     size = im.shape
 
-    new_width, new_height = 380, 380
+    new_width, new_height = 400, 400
 
     left = (size[0] - new_width)/2
     top = (size[1] - new_height)/2
