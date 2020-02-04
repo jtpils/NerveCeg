@@ -19,3 +19,17 @@ python train.py     # put proper arguments
 cd classification
 python test.py
 ```
+
+## To train(U-Net training)
+
+```plain
+cd segmentation
+python train.py     # put proper arguments
+```
+
+## To run(U-Net running)
+
+```plain
+cd segmentation
+python run.py
+```
