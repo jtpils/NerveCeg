@@ -5,3 +5,4 @@ tqdm
 pandas
 pillow
 jupyter
+git+https://github.com/ildoonet/pytorch-randaugment
