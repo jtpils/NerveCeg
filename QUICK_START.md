@@ -6,13 +6,13 @@ Follow several steps to run the code
 
 Download data from [Kaggle](https://www.kaggle.com/c/ultrasound-nerve-segmentation/overview) and distribute it as shown in csv file.
 
-## To train
+## To train(EfficientNet training)
 
 ```plain
 python train.py     # put proper arguments
 ```
 
-## To run
+## To run(EfficientNet running)
 
 ```plain
 python test.py

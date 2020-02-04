@@ -1,6 +1,6 @@
 import torch
 
-from misc_functions import get_example_params, convert_to_grayscale, save_gradient_images
+from CNNVis. misc_functions import get_example_params, convert_to_grayscale, save_gradient_images
 
 
 class VanillaBackprop():

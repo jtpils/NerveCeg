@@ -64,7 +64,7 @@ class Trainer:
             epoch_test_res = self.test_epoch(dl_test, verbose=verbose, **kw)
             test_loss.extend([float(x.item()) for x in epoch_test_res.losses])
 
-        torch.save(self.model.state_dict(), './cls/'+'ckpt_'+str(epoch)+'.pt')
+            torch.save(self.model, './cls/'+'ckpt_'+str(epoch)+'.pt')
 
         return FitResult(actual_num_epochs,
                          train_loss, test_loss)

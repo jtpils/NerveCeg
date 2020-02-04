@@ -28,6 +28,11 @@ def preprocessing(image, label):
     
     return image_transform(image).float(), label
 
+def pred(pred):
+    values, indices = pred.max(1)
+
+    return values, indices
+
 
 if __name__ == '__main__':
     ds_train = NerveClassificationDataset(root='./data/', train=True, transform=preprocessing)
