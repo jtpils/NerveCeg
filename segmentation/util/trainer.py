@@ -144,7 +144,7 @@ class Trainer:
                     break
                 epochs_without_improvement += 1
             loc = './save_models/'
-            torch.save(model, os.path.join(loc, str(epoch) + '.pt'))
+            torch.save(self.model, os.path.join(loc, str(epoch) + '.pt'))
 
             # ========================
 
