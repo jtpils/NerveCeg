@@ -4,7 +4,7 @@
 
 As stated in [requirements.txt](./requirements.txt),
 
-* Python >= 3.7
+* Python >= 3.6
 * numpy
 * tqdm
 * matplotlib
