@@ -143,8 +143,8 @@ class Trainer:
                     print("Early stopping after %s with out improvement" % epochs_without_improvement)
                     break
                 epochs_without_improvement += 1
-
-            torch.save('./save_models/' + str(epoch) + 'pt')
+            loc = './save_models/'
+            torch.save(model, os.path.join(loc, str(epoch) + '.pt'))
 
             # ========================
 
@@ -197,8 +197,9 @@ class Trainer:
         y = y.to(self.device)
         cls_ = self.cls_model
         _, indices = pred_proc(cls_(X))
-        loss = 0
-        score = 0
+        loss_out = self.loss_fn(X, y)
+        score_out = self.objective_metric(X, y)
+
         if to_np(indices)[0] == 1:
             # print("YES MASK")
             pred = self.model(X)
@@ -215,11 +216,14 @@ class Trainer:
                         tag = tag.replace('.', '/')
                         self.tensorboard_logger.add_histogram('exp-%s/batch/train/param/%s' % (self.experiment_prefix, tag), to_np(value), index)
                         self.tensorboard_logger.add_histogram('exp-%s/batch/train/param/%s/grad' % (self.experiment_prefix, tag), to_np(value.grad), index)
+            loss_out = loss
+            score_out = score
         elif to_np(indices)[0] == 0:
             # print("NO MASK")
             pass
+        
 
-        return BatchResult(loss, score)
+        return BatchResult(loss_out, score_out)
 
     def test_batch(self, index, batch_data) -> BatchResult:
         """
@@ -237,13 +241,20 @@ class Trainer:
             else:
                 X = X.to(self.device)
             y = y.to(self.device)
-            pred = self.model(X)
-            loss = self.loss_fn(pred, y)
-            score = self.objective_metric(pred, y)
-            if self.tensorboard_logger:
-                self.tensorboard_logger.add_scalar('exp-%s/batch/test/loss' % self.experiment_prefix, loss, index)
-                self.tensorboard_logger.add_scalar('exp-%s/batch/test/score' % self.experiment_prefix, score, index)
-            return BatchResult(loss, score)
+            cls_ = self.cls_model
+            _, indices = pred_proc(cls_(X))
+            loss_out = self.loss_fn(X, y)
+            score_out = self.objective_metric(X, y)
+
+            if to_np(indices)[0] == 1:
+                pred = self.model(X)
+                loss = self.loss_fn(pred, y)
+                score = self.objective_metric(pred, y)
+                if self.tensorboard_logger:
+                    self.tensorboard_logger.add_scalar('exp-%s/batch/test/loss' % self.experiment_prefix, loss, index)
+                    self.tensorboard_logger.add_scalar('exp-%s/batch/test/score' % self.experiment_prefix, score, index)
+
+            return BatchResult(loss_out, score_out)
 
     @staticmethod
     def _print(message, verbose=True):
