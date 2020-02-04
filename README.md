@@ -4,7 +4,7 @@ In nerve segmentation task, there was a critical shortcoming which affects very 
 
 The first part is a binary classification task. The existence of a nerve mask is labeling criteria. By adding all values in a nerve mask, we can find out whether the mask is empty or not. In this code, we used EfficientNet-B4 for classifying nerve existence.
 
-The second part is the nerve segmentation task. After confirming nerve presence, we segment nerve by U-Net, and others derived from U-Net. The reason for selecting U-Net and it's affiliated models is that the feature accumulation component gives a massive advantage in medical imagery segmentation.
+The second part is the nerve segmentation task. After confirming nerve presence, we segment nerve by U-Net, and others derived from U-Net. The reason for selecting U-Net and its affiliated models is that the feature accumulation component gives a massive advantage in medical imagery segmentation.
 
 ![Architechture of NerveCeg](https://user-images.githubusercontent.com/40779417/73638667-3410ee00-46ae-11ea-9644-cc62242d5651.png)
 
