@@ -1,4 +1,5 @@
 import torchvision.transforms as transforms
+from RandAugment import RandAugment
 from cv2 import cv2
 from dataset import NerveClassificationDataset
 
@@ -25,6 +26,7 @@ def preprocessing(image, label):
             transforms.ToTensor(),
         ]
     )
+    image_transform.transforms.insert(0, RandAugment(2, 14))
     
     return image_transform(image).float(), label
 
