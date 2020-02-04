@@ -242,9 +242,8 @@ class Trainer:
             else:
                 X = X.to(self.device)
             y = y.to(self.device)
-            X_t = ToTensor()(crop_square(ToPILImage()(X), 380))
             cls_ = self.cls_model
-            _, indices = pred_proc(cls_(X_t))
+            _, indices = pred_proc(cls_(X))
             loss_out = self.loss_fn(X, y)
             score_out = self.objective_metric(X, y)
             
