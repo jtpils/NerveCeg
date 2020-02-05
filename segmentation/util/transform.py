@@ -18,6 +18,20 @@ def crop_square(im, size):
 
     return im
 
+def crop_square_cv(im, tsize):
+    size = im.shape
+
+    new_width, new_height = tsize, tsize
+
+    left = (size[0] - new_width)/2
+    top = (size[1] - new_height)/2
+    right = (size[0] + new_width)/2
+    bottom = (size[1] + new_height)/2
+    
+    im = im[int(left):int(right), int(top):int(bottom)]
+
+    return im
+
 def normalize(x,  mean=500, std=None):
     mean_tensor = torch.ones_like(x) * mean
     x -= mean_tensor
@@ -43,3 +57,13 @@ def preprocessing(image, mask):
     ])
 
     return image_transformer(image).float(), mask_transformer(mask).float()
+
+def real_preprocessing(image, index):
+    image = crop_square_cv(image, 400)
+
+    image_transformer = transforms.Compose([
+        transforms.ToTensor(),
+        # transforms.Lambda(lambda x: normalize(x))
+    ])
+
+    return image_transformer(image).float(), index

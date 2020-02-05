@@ -47,7 +47,7 @@ if __name__ == '__main__':
     dl_train = DataLoader(ds_train, batch_size=batch_size, shuffle=True)
     dl_test = DataLoader(ds_test, batch_size=batch_size, shuffle=True)
 
-    model = U_Net()
+    model = AttU_Net()
     cls_model = torch.load('./cls/final.pt')
     # model = torch.nn.DataParallel(model)
     # model = model.cuda()
